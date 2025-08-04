@@ -1,0 +1,141 @@
+<p align="center">
+    <a href="https://cloud.ibm.com">
+        <img src="https://cloud.ibm.com/media/docs/developer-appservice/resources/ibm-cloud.svg" height="100" alt="IBM Cloud">
+    </a>
+</p>
+
+<p align="center">
+    <a href="https://cloud.ibm.com">
+    <img src="https://img.shields.io/badge/IBM%20Cloud-powered-blue.svg" alt="IBM Cloud">
+    </a>
+    <a href="https://www.ibm.com/developerworks/learn/java/">
+    <img src="https://img.shields.io/badge/platform-java-lightgrey.svg?style=flat" alt="platform">
+    </a>
+    <img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2">
+</p>
+
+
+# Scalable Web Hosting Using Auto-Scaling and Load Balancing on IBM Cloud
+
+> We have applications available for [Node.js Express](https://github.com/IBM/node-express-app), [Go Gin](https://github.com/IBM/go-gin-app), [Python Flask](https://github.com/IBM/python-flask-app), [Python Django](https://github.com/IBM/python-django-app), [Java Spring](https://github.com/IBM/java-spring-app), [Java Liberty](https://github.com/IBM/java-liberty-app), [Swift Kitura](https://github.com/IBM/swift-kitura-app), [Android](https://github.com/IBM/android-app), and [iOS](https://github.com/IBM/ios-app).
+
+This project provides a scalable web hosting solution on IBM Cloud, utilizing auto-scaling and load balancing to ensure high availability, optimal performance, and cost efficiency. It leverages Kubernetes for container orchestration, IBM Cloud Load Balancer for traffic distribution, and IBM Cloud Monitoring for real-time insights
+This application exposes the following endpoints:
+
+* Web content: `<host>:<port>/<contextRoot>`
+* Web Application: `<host>:<port>/v1/example`
+
+
+The web application has a health endpoint which is accessible at `<host>:<port>/health`. The ports are set in the `pom.xml` file.
+
+## Steps
+
+You can [deploy this application to IBM Cloud](https://cloud.ibm.com/developer/appservice/starter-kits/java-liberty-app) or [build it locally](#building-locally) by cloning this repo first.  Once your app is live, you can access the `/health` endpoint to build out your cloud native application.
+
+### Setting up from the IBM Cloud console
+
+<p align="center">
+    <a href="https://cloud.ibm.com/developer/appservice/starter-kits/java-liberty-app">
+    <img src="https://cloud.ibm.com/devops/setup/deploy/button_x2.png" alt="Deploy to IBM Cloud">
+    </a>
+</p>
+
+Click **Deploy to IBM Cloud** to deploy this same application to IBM Cloud. This option creates a deployment pipeline, complete with a hosted GitLab project and a DevOps toolchain. You can deploy your app to Cloud Foundry, a Kubernetes cluster, or a Red Hat OpenShift cluster. OpenShift is available only through a standard cluster, which requires you to have a billable account.
+
+[IBM Cloud DevOps](https://www.ibm.com/cloud/devops) services provides toolchains as a set of tool integrations that support development, deployment, and operations tasks inside IBM Cloud.
+
+### Setting up from IBM Cloud Schematics
+
+Follow the [README](https://github.com/IBM-Cloud/Scalable-web-app-liberty/tree/master/terraform/README.md) instructions for creating and deploying your application via IBM Cloud Schematics, which uses Terraform templates to create an IKS cluster and IBM Cloud DevOps toolchain. 
+
+### Building Locally
+
+To get started building this application locally, you can either run the application natively or use the [IBM Cloud Developer Tools](https://cloud.ibm.com/docs/cli?topic=cloud-cli-getting-started) for containerization and easy deployment to IBM Cloud.
+
+#### Native Application Development
+
+* IBM Cloud Kubernetes Service (IKS) - For containerized application deployment
+
+* IBM Cloud Load Balancer - To distribute incoming requests efficiently
+* IBM Cloud Object Storage - For backup and logging
+* Docker - To containerize the application
+* IBM Cloud CLI & kubectl - For managing the deployment
+* Prometheus & Grafana - For monitoring and logging
+* CI/CD Pipelines - For continuous deployment automation
+
+
+
+### To build and run the application:
+1. `mvn liberty:dev`
+1. Press enter once the server is running to run integration tests.
+
+To run an application in Docker use the Docker file called `Dockerfile`. If you do not want to install Maven locally you can use `Dockerfile-tools` to build a container with Maven installed.
+
+You can verify the state of your locally running application using the Selenium UI test script included in the `scripts` directory.
+
+#### IBM Cloud Developer Tools
+
+Install [IBM Cloud Developer Tools](https://cloud.ibm.com/docs/cli?topic=cloud-cli-getting-started) on your machine by running the following command:
+```
+curl -fsSL https://clis.cloud.ibm.com/install/linux | sh  # IBM Cloud CLI (For Linux/macOS)
+ibmcloud plugin install container-service  # Kubernetes Service Plugin
+ibmcloud plugin install kubernetes-service  # Kubernetes Service Plugin
+kubectl version  # Verify Kubernetes
+```
+
+Set Up IBM Cloud Kubernetes Cluster:
+
+```bash
+ibmcloud login --sso
+ibmcloud ks cluster config --cluster <your-cluster-name>
+kubectl get nodes  # Verify cluster
+```
+Build & Push Docker Image:
+```bash
+docker build -t us.icr.io/<namespace>/scalable-web-app:v1 .
+docker push us.icr.io/<namespace
+```
+Deploy Application with Auto-Scaling:
+```bash
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+Verify Deployment & Scaling:
+```bash
+kubectl get pods  # Check running pods
+kubectl get hpa   # Check auto-scaling status
+kubectl get svc   # Get Load Balancer details
+```
+
+This will create and download a starter application with the necessary files needed for local development and deployment.
+
+Your application will be compiled with Docker containers. To compile and run your app, run:
+
+```bash
+ibmcloud dev build
+ibmcloud dev run
+```
+
+This will launch your application locally. When you are ready to deploy to IBM Cloud on Cloud Foundry or Kubernetes, run one of the following commands:
+
+```bash
+ibmcloud dev deploy -t buildpack // to Cloud Foundry
+ibmcloud dev deploy -t container // to K8s cluster
+```
+
+You can build and debug your app locally with:
+
+```bash
+ibmcloud dev build --debug
+ibmcloud dev debug
+```
+
+## Next Steps
+* Learn more about augmenting your Java applications on IBM Cloud with the [Java Programming Guide](https://cloud.ibm.com/docs/java?topic=java-getting-started).
+* Explore other [sample applications](https://cloud.ibm.com/developer/appservice/starter-kits) on IBM Cloud.
+
+## License
+
+This sample application is licensed under the Apache License, Version 2. Separate third-party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1](https://developercertificate.org/) and the [Apache License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
+
+[Apache License FAQ](https://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
